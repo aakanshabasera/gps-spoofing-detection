@@ -1,0 +1,27 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Testing & Virtual Environments
+.pytest_cache/
+.venv/
+venv/
+ENV/
+*.egg-info/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Databases & Cache
+*.db
+*.sqlite3
+data/system.db
+
+# Simulated CSV Outputs (Regenerated via simulator/generate_datasets.py)
+data/simulated/*.csv
+!data/simulated/.gitkeep

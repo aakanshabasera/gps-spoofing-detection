@@ -1,0 +1,46 @@
+# GPS Spoofing Detection System Configuration & Detection Thresholds
+
+airport:
+  icao: "VIDP"
+  iata: "DEL"
+  name: "Indira Gandhi International Airport"
+  center_latitude: 28.5562
+  center_longitude: 77.1000
+  elevation_ft: 777
+
+kinematic_limits:
+  aircraft:
+    max_ground_speed_kts: 180.0     # Maximum realistic taxiing / rollout speed
+    max_airborne_speed_kts: 600.0   # Maximum realistic approach / cruise speed
+    max_acceleration_ms2: 12.0      # Maximum physical acceleration rate
+    max_climb_rate_fpm: 6000.0      # Maximum climb/descent rate (ft/min)
+    max_heading_rate_deg_sec: 15.0  # Maximum heading change rate (deg/sec)
+  ground_vehicle:
+    max_speed_kts: 45.0             # Maximum airport apron / service road speed
+    max_acceleration_ms2: 5.0
+
+detection_thresholds:
+  sudden_jump:
+    max_displacement_meters: 100.0  # Displacement threshold over 1 second interval
+  gradual_drift:
+    trajectory_deviation_meters: 50.0 # Deviation from projected trajectory
+  multi_source:
+    max_reference_mismatch_meters: 80.0 # Maximum allowed mismatch vs independent reference
+
+risk_scoring:
+  weights:
+    impossible_speed: 30
+    position_jump: 30
+    trajectory_drift: 20
+    altitude_anomaly: 20
+    heading_anomaly: 10
+    geofence_violation: 20
+    off_taxiway: 20
+    reference_mismatch: 30
+    ml_anomaly: 20
+  severity_levels:
+    normal: [0, 20]
+    low: [21, 40]
+    medium: [41, 60]
+    high: [61, 80]
+    critical: [81, 100]

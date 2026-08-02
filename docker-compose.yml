@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  dashboard:
+    build: .
+    container_name: gps_spoofing_dashboard
+    ports:
+      - "8501:8501"
+    command: streamlit run dashboard/app.py --server.port=8501 --server.address=0.0.0.0
+    environment:
+      - PYTHONPATH=/app
+
+  api:
+    build: .
+    container_name: gps_spoofing_api
+    ports:
+      - "8000:8000"
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000
+    environment:
+      - PYTHONPATH=/app

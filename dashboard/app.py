@@ -1,8 +1,16 @@
 import os
+import sys
+
+# Ensure repository root directory is in sys.path
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if root_dir not in sys.path:
+    sys.path.insert(0, root_dir)
+
 import streamlit as st
 import pandas as pd
 import yaml
 from geospatial.airport_map import AirportMap
+
 from simulator.aircraft_simulator import AircraftSimulator
 from simulator.vehicle_simulator import GroundVehicleSimulator
 from simulator.spoofing_scenarios import SpoofingScenarioGenerator

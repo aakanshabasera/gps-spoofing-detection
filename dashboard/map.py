@@ -22,15 +22,41 @@ def render_airport_map(
     fig = go.Figure()
 
     # 1. Render Airport Infrastructure Polygons (Boundary, Runways, Taxiways)
-    for _, row in airport_gdf.iterrows():
-        feature_type = row.get("type", "")
-        geom = row.geometry
-        name = row.get("name", "Infrastructure")
+    if hasattr(airport_gdf, "iterrows"):
+        rows = [r for _, r in airport_gdf.iterrows()]
+    elif hasattr(airport_gdf, "features"):
+        rows = getattr(airport_gdf, "features")
+    elif isinstance(airport_gdf, (list, tuple)):
+        rows = airport_gdf
+    else:
+        rows = []
+
+    for row in rows:
+        if isinstance(row, dict):
+            feature_type = row.get("type", "")
+            geom = row.get("geometry")
+            name = row.get("name", "Infrastructure")
+        else:
+            feature_type = row.get("type", "") if hasattr(row, "get") else getattr(row, "type", "")
+            geom = row.get("geometry", None) if hasattr(row, "get") else getattr(row, "geometry", None)
+            name = row.get("name", "Infrastructure") if hasattr(row, "get") else getattr(row, "name", "Infrastructure")
         
-        if geom.geom_type == "Polygon":
-            lons, lats = geom.exterior.xy
-            lons = list(lons)
-            lats = list(lats)
+        if geom is None:
+            continue
+
+        geom_type = getattr(geom, "geom_type", "") if not isinstance(geom, dict) else geom.get("type", "")
+        
+        if geom_type == "Polygon":
+            if hasattr(geom, "exterior"):
+                lons, lats = geom.exterior.xy
+                lons = list(lons)
+                lats = list(lats)
+            elif isinstance(geom, dict) and "coordinates" in geom:
+                coords = geom["coordinates"][0]
+                lons = [c[0] for c in coords]
+                lats = [c[1] for c in coords]
+            else:
+                continue
             
             if feature_type == "boundary":
                 fig.add_trace(go.Scattermapbox(
@@ -66,10 +92,17 @@ def render_airport_map(
                     hoverinfo="text",
                     hovertext=f"Taxiway {name}"
                 ))
-        elif geom.geom_type == "LineString":
-            lons, lats = geom.xy
-            lons = list(lons)
-            lats = list(lats)
+        elif geom_type == "LineString":
+            if hasattr(geom, "xy"):
+                lons, lats = geom.xy
+                lons = list(lons)
+                lats = list(lats)
+            elif isinstance(geom, dict) and "coordinates" in geom:
+                coords = geom["coordinates"]
+                lons = [c[0] for c in coords]
+                lats = [c[1] for c in coords]
+            else:
+                continue
             color = "#059669" if feature_type == "runway" else "#d97706"
             fig.add_trace(go.Scattermapbox(
                 lat=lats,

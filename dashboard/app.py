@@ -125,8 +125,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Load resources
-CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "config", "thresholds.yaml")
-GEOJSON_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "reference", "del_airport.geojson")
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+CONFIG_PATH = os.path.join(BASE_DIR, "config", "thresholds.yaml")
+GEOJSON_PATH = os.path.join(BASE_DIR, "data", "reference", "del_airport.geojson")
 
 @st.cache_resource
 def load_system_resources():
